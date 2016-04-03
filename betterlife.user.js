@@ -148,8 +148,6 @@
 	/** Reddit **/
 	// Get current page type
 	reddit.detectPage = function(path) {
-		// TODO: add thread page
-		
 		// Use reddit's body classes to detect the page
 		var classes = document.getElementsByTagName('body')[0].className;
 		

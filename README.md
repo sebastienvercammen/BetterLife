@@ -1,7 +1,7 @@
 # BetterLife
 A userscript to improve the quality of your life. (Originally started as a joke for the 1st of April 2016)
 
-The userscript modifies several websites so you can focus on doing what's important without getting distracted.
+The userscript modifies several websites so you can focus on doing what's important. No more distractions.
 
 ## Table of contents
 - [Requirements](#requirements)
@@ -23,11 +23,9 @@ Requires:
 
 ## Websites
 ### Twitch.tv
-Changes:
 
 - Removes Twitch.tv chat.
 
 ### Reddit
-Changes:
 
 - Hides all child comments. Top comments will (usually) include the most important information for most threads, so this will remove irrelevant comments.

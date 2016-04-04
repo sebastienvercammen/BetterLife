@@ -1,6 +1,6 @@
 ﻿// ==UserScript==
 // @name            BetterLife
-// @description     A userscript to improve the quality of your life. (Originally started as a joke for the 1st of April 2016)
+// @description     A userscript to improve the quality of your life.
 // @author          Sébastien Vercammen
 // @namespace       http://www.sebastienvercammen.be/
 // @supportURL      https://github.com/sebastienvercammen/BetterLife/issues
@@ -9,10 +9,18 @@
 // @match           *://twitch.tv/*
 // @match           *://www.twitch.tv/*
 // @match           *://*.reddit.com/*
+// @match           *://*.facebook.com/*
+// @exclude         *://*.facebook.com/ajax/*
 // @grant           none
 // @run-at          document-end
-// @version         1.0.0
+// @version         1.0.1
 // ==/UserScript==
+
+/**
+    History:
+        - 1.0.1: Automatically sort Facebook by recent rather than top.
+        - 1.0.0: Initial version, removes Twitch.tv chat and reddit's child comments.
+**/
 
 (function() {
     'use strict';
@@ -64,11 +72,12 @@
     
     var twitch = sites['twitch'] = {};
     var reddit = sites['reddit'] = {};
+    var facebook = sites['facebook'] = {};
     
     
     /** Twitch.tv **/
     // We call our method detectPage so we can implement the different behaviour w/o changing the site calls (site.detectPage()). realDetectPage contains the actual detection.
-    twitch.detectPage = function detectPage() {
+    twitch.detectPage = function detectPage(location) {
         let page = twitch.realDetectPage();
         
         // Forward to retryDetectPage, which will call callAllMethodsForSitePage.
@@ -80,7 +89,7 @@
     };
     
     // Get current page type
-    twitch.realDetectPage = function realDetectPage(path) {
+    twitch.realDetectPage = function realDetectPage() {
         // Try detecting current page by Twitch's JS
         if(window.hasOwnProperty('SitePageType')) {
             return window.SitePageType;
@@ -147,7 +156,7 @@
     
     /** Reddit **/
     // Get current page type
-    reddit.detectPage = function(path) {
+    reddit.detectPage = function(location) {
         // Use reddit's body classes to detect the page
         var classes = document.getElementsByTagName('body')[0].className;
         
@@ -179,13 +188,38 @@
     };
     
     
+    /** Facebook **/
+    facebook.detectPage = function(location) {
+        var path = location.pathname;
+        
+        if(path === '/') {
+            return 'home';
+        }
+        
+        return false;
+    };
+    
+    /** Facebook homepage **/
+    facebook.home = {};
+    
+    // Sort Facebook's timeline by recent rather than "top".
+    facebook.home.sortByRecent = function sortByRecent() {
+        // Only run if we aren't already sorted
+        if(!document.querySelector('div.fsm.fwn.fcg > a[href="/?sk=h_nor"]') && location.search.indexOf('sk=h_chr') === -1) {
+            window.location.href = '/?sk=h_chr';
+        }
+        
+        return true; // We're sorted, everything is OK.
+    };
+    
+    
     /** Let's go **/
     var sitename = domainToWebsiteName(window.location.hostname);
     
     // Do we have something for this site?
     if(sites.hasOwnProperty(sitename)) {
         var site = sites[sitename];
-        var page = site.detectPage(window.location.pathname);
+        var page = site.detectPage(window.location);
         
         // Do we have something for this page?
         if(page !== false) {

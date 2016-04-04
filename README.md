@@ -29,3 +29,7 @@ Requires:
 ### Reddit
 
 - Hides all child comments. Top comments will (usually) include the most important information for most threads, so this will remove irrelevant comments.
+
+### Facebook
+
+- Automatically sorts timeline by most recent, rather than Facebook's "top".
